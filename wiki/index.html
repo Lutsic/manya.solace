@@ -22,7 +22,7 @@
         }
         .button-container {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 20px;
             align-items: center;
         }
@@ -40,16 +40,26 @@
         button:hover {
             background-color: #555;
         }
+        /* Стили для обработки случая, если изображение не загружается */
+        img[alt] {
+            display: block;
+            text-align: center;
+            color: #333;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
-    <img src="KO2.png"  alt="я че ебу хуле оно не работает">
+    <img src="KO2.png" alt="нихуя не работает, смирись с этим">
     <div class="button-container">
         <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing">
             <button>Кошаки</button>
         </a>
         <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing">
             <button>Solace</button>
+        </a>
+        <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing">
+            <button>О вики</button>
         </a>
     </div>
 </body>
