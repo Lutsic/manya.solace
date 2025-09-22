@@ -1,0 +1,95 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница с изображением и кнопками</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        img {
+            width: 300px; /* Примерная ширина, можно изменить */
+            height: 200px; /* Примерная высота, можно изменить */
+            object-fit: cover;
+            border-radius: 8px; /* Опционально, для скругления углов */
+            margin-bottom: 20px;
+        }
+        .button {
+            background: linear-gradient(to right, rgb(237, 133, 133), rgb(237, 187, 133));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            width: 120px; /* Фиксированная ширина для одинакового размера */
+            text-align: center; /* Центрирование текста */
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: row; /* Горизонтальное расположение */
+            align-items: center;
+            gap: 10px; /* Расстояние между кнопками */
+        }
+    </style>
+</head>
+<body>
+    <img src="KO2.png" alt="KO2">
+    <div class="buttons">
+        <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing" class="button">Кошаки</a>
+        <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing" class="button">Solace</a>
+        <a href="https://docs.google.com/document/d/12YLmVBcFRlvyfYBMLOzM8izC3eKd_Ycr7qilXo5XYpE/edit?usp=sharing" class="button">О вики</a>
+    </div>
+</body>
+</html>
