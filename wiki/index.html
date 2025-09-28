@@ -90,5 +90,23 @@
         <a href="https://lutsic.github.io/manya.solace/building/" class="button">Solace</a>
         <a href="https://lutsic.github.io/manya.solace/wiki/about/" class="button">О вики</a>
     </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // создаём скрытый аудио-элемент
+    const audio = document.createElement("audio");
+    audio.src = "data:audio/mp3;base64,//uQx..."; // пустой/очень короткий звук
+    audio.autoplay = true;
+    audio.muted = false; 
+    audio.style.display = "none";
+    document.body.appendChild(audio);
+
+    // пытаемся воспроизвести
+    audio.play().then(() => {
+        console.log("Автовоспроизведение разрешено");
+    }).catch(err => {
+        console.log("Браузер запросит разрешение на воспроизведение при следующем взаимодействии:", err);
+    });
+});
+</script>
 </body>
 </html>
