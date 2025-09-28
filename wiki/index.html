@@ -37,7 +37,8 @@
         }
         return gk_fileData[filename] || "";
         }
-        </script><!DOCTYPE html>
+        </script>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -81,15 +82,114 @@
         align-items: center;
         gap: 20px; /* расстояние между кнопками */
     }
- </style>
+
+    /* --- Modal styles --- */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+    }
+    .modal {
+        background: white;
+        border-radius: 12px;
+        max-width: 520px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        padding: 22px;
+        text-align: center;
+    }
+    .modal p {
+        margin: 0 0 18px 0;
+        color: #222;
+        font-size: 1.05rem;
+        line-height: 1.4;
+    }
+    .modal .ok-button {
+        /* use the exact same gradient + white text as existing .button */
+        background: linear-gradient(to right, rgb(237, 133, 133), rgb(237, 187, 133));
+        color: white;
+        padding: 10px 22px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .modal .ok-button:focus { outline: 3px solid rgba(237,133,133,0.25); }
+
+    @media (max-width: 520px) {
+        .modal { padding: 16px; }
+        .modal p { font-size: 0.98rem; }
+    }
+    </style>
 </head>
 <body>
     <img src="WIKI.png" alt="not working">
     <div class="buttons">
-        <a href="https://lutsic.github.io/manya.solace/wiki/koshaki/" class="button">Кошаки</a>
+        <a href="https://lutsic.github.io/manya.solace/building/" class="button">Кошаки</a>
         <a href="https://lutsic.github.io/manya.solace/building/" class="button">Solace</a>
         <a href="https://lutsic.github.io/manya.solace/wiki/about/" class="button">О вики</a>
     </div>
 
+<script>
+// Key used in localStorage
+const STORAGE_KEY = 'soundNoticeSeen_v1'; // versioning key makes it easy to show again if text/style changes
+
+function createNotice() {
+  // overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'sound-notice-overlay';
+
+  // modal
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+
+  const paragraph = document.createElement('p');
+  paragraph.textContent = 'На данном сайте используются звуковые эффекты, для полного погружения рекомендуем включить авто-воспроизведение аудио в настройках вашего браузера';
+
+  const ok = document.createElement('button');
+  ok.className = 'ok-button';
+  ok.type = 'button';
+  ok.textContent = 'ОК';
+
+  ok.addEventListener('click', () => {
+    try { localStorage.setItem(STORAGE_KEY, 'true'); } catch (e) { /* localStorage might be blocked */ }
+    document.body.removeChild(overlay);
+  });
+
+  modal.appendChild(paragraph);
+  modal.appendChild(ok);
+  overlay.appendChild(modal);
+
+  // close on overlay click (but not when clicking inside modal)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      try { localStorage.setItem(STORAGE_KEY, 'true'); } catch (err) {}
+      document.body.removeChild(overlay);
+    }
+  });
+
+  return overlay;
+}
+
+// Show modal only if user hasn't seen it yet
+document.addEventListener('DOMContentLoaded', () => {
+  let seen = false;
+  try { seen = localStorage.getItem(STORAGE_KEY) === 'true'; } catch (e) { seen = false; }
+  if (!seen) {
+    const notice = createNotice();
+    document.body.appendChild(notice);
+    // focus OK button for accessibility
+    const okBtn = notice.querySelector('.ok-button');
+    if (okBtn) okBtn.focus();
+  }
+});
+</script>
 </body>
 </html>
