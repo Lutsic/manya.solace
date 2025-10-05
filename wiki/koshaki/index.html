@@ -1,154 +1,162 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Кошаки</title>
 <style>
-        body {
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        header img {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-        }
-        .lists-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 1200px;
-            margin-bottom: 30px;
-            align-items: start; /* Фикс: Каждый элемент начинается сверху, не растягивается по высоте ряда */
-        }
-        details {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            padding: 10px;
-        }
-        summary {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
-            color: white;
-            border-radius: 5px;
-            list-style: none; /* Убираем дефолтный маркер */
-        }
-        summary::-webkit-details-marker {
-            display: none; /* Для WebKit браузеров */
-        }
-        summary::marker {
-            content: ''; /* Убираем маркер */
-        }
-        summary::before {
-            content: '►'; /* Треугольник вправо для закрытого */
-            margin-right: 5px;
-            font-size: 1em;
-        }
-        details[open] > summary::before {
-            content: '▼'; /* Треугольник вниз для открытого */
-        }
-        summary img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-        .sub-details {
-            margin-top: 10px;
-            border: none;
-            background-color: transparent;
-        }
-        .sub-details summary {
-            background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
-            font-size: 1em;
-            padding: 8px;
-        }
-        .sub-details summary::before {
-            content: '►'; /* Треугольник для подсписков */
-            margin-right: 5px;
-        }
-        .sub-details[open] > summary::before {
-            content: '▼';
-        }
-        ul {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        li {
-            padding: 5px 0;
-            font-size: 1em;
-        }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        audio {
-            display: none; /* Скрываем плеер, так как звук проигрывается автоматически */
-        }
-    </style>
+    body {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    header img {
+        max-width: 100%;
+        height: auto;
+        margin: 20px 0;
+    }
+    #search-container {
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    #search-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+    #search-results {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+        text-align: left;
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #f9f9f9;
+        display: none;
+    }
+    #search-results li {
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+    }
+    #search-results li:last-child {
+        border-bottom: none;
+    }
+    #search-results a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+    #search-results a:hover {
+        text-decoration: underline;
+    }
+
+    .lists-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        width: 90%;
+        max-width: 1200px;
+        margin-bottom: 30px;
+        align-items: start;
+    }
+    details {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        padding: 10px;
+    }
+    summary {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        cursor: pointer;
+        background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
+        color: white;
+        border-radius: 5px;
+        list-style: none;
+    }
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    summary::marker {
+        content: '';
+    }
+    summary::before {
+        content: '►';
+        margin-right: 5px;
+        font-size: 1em;
+    }
+    details[open] > summary::before {
+        content: '▼';
+    }
+    summary img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+    .sub-details {
+        margin-top: 10px;
+        border: none;
+        background-color: transparent;
+    }
+    .sub-details summary {
+        background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
+        font-size: 1em;
+        padding: 8px;
+    }
+    .sub-details summary::before {
+        content: '►';
+        margin-right: 5px;
+    }
+    .sub-details[open] > summary::before {
+        content: '▼';
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+    li {
+        padding: 5px 0;
+        font-size: 1em;
+    }
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    audio {
+        display: none;
+    }
+</style>
 </head>
 <body>
-<audio autoplay="" src="solaceost2.mp3"></audio>
+<audio autoplay src="solaceost2.mp3"></audio>
+
 <header>
-<img alt="Заголовочное изображение" src="KOSHAKI_WIKI.png"/>
+    <img alt="Заголовочное изображение" src="KOSHAKI_WIKI.png"/>
 </header>
+
+<!-- Поиск -->
+<div id="search-container">
+    <input type="text" id="search-input" placeholder="Поиск по статьям...">
+    <ul id="search-results"></ul>
+</div>
+
 <div class="lists-container">
-<!-- Персонажи -->
+    <!-- Персонажи -->
 <details>
 <summary>Персонажи</summary>
 <details class="sub-details">
@@ -352,5 +360,74 @@
 </ul>
 </details>
 </div>
+
+<script>
+const articles = [
+    { title: "ДК. 56, Дженни Лэвиндэ Ренти Люцык", url: "https://lutsic.github.io/manya.solace/wiki/lutsic/" },
+    { title: "ДК. 65, Джезитта Маня", url: "https://lutsic.github.io/manya.solace/wiki/manya/" },
+    { title: "Истаевцы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/istaevsti/" },
+    { title: "Норо", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/noro/" },
+    { title: "Виверна", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/wyverna/" },
+    { title: "Наушка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/naushka/" },
+    { title: "ДК. 16, Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/vivaldi/" },
+    { title: "ДК. 26, Саша (Ушедший)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha-leaved/" },
+    { title: "ДК. 26, Саша", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha/" },
+    { title: "ДК. 56, Дженни Лэвиндэ(Ушедшая)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/jenny_levinde/" },
+    { title: "ДК. Ø, Ники", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/niki/" },
+    { title: "Мифический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
+    { title: "Мистический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
+    { title: "НАСА", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/nasa/" },
+    { title: "Орден Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/orden-vivaldi/" },
+    { title: "Кошаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/koshaki/" },
+    { title: "Сони", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/soni/" },
+    { title: "Хабаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khabaki/" },
+    { title: "Демон", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demoni/" },
+    { title: "Работники", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/rabotniki/" },
+    { title: "Хранители Времени", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khraniteli-vremeni/" },
+    { title: "Драконы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/drakoni/" },
+    { title: "45 Кошачьих веков", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/45-koshachikh-vekov/" },
+    { title: "Смутное время", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/smutnoe-vremya/" },
+    { title: "Нескончаемые войны", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/neskonchaemie-voyni/" },
+    { title: "Конец всего и Новый мир", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/konets-vsego/" },
+    { title: "Храм демонов", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/xpam-demonov/" },
+    { title: "Фивы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/fivi/" },
+    { title: "Красные горы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/krasnie-gori/" },
+    { title: "Книга Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/kniga-vivaldi/" },
+    { title: "Книга сил Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/kniga-sil-vivaldi/" },
+    { title: "Мифическая ручка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-ruchka/" },
+    { title: "Священная кололка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/svyashennaya-kololka/" },
+    { title: "Демонические карандаши", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demonicheskie-karandashi/" },
+    { title: "Демоническая сумка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demonicheskaya-sumka/" },
+    { title: "Странная карта", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/strannaya-karta/" },
+    { title: "Строение вселенной", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/stroenie-vselennoy/" },
+    { title: "Расположение миров", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/raspolozchenie-mirov/" },
+    { title: "Кошай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/koshay/" },
+    { title: "Истай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/istay/" },
+    { title: "Хабикарай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khabikaray/" }
+];
+
+const searchInput = document.getElementById('search-input');
+const resultsList = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    resultsList.innerHTML = '';
+    if (query === '') {
+        resultsList.style.display = 'none';
+        return;
+    }
+    const results = articles.filter(a => a.title.toLowerCase().includes(query));
+    if (results.length === 0) {
+        resultsList.innerHTML = '<li>Ничего не найдено</li>';
+    } else {
+        results.forEach(article => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
+            resultsList.appendChild(li);
+        });
+    }
+    resultsList.style.display = 'block';
+});
+</script>
 </body>
 </html>
