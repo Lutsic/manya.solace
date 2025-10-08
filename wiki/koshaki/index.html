@@ -19,6 +19,8 @@
         height: auto;
         margin: 20px 0;
     }
+
+    /* === Поиск === */
     #search-container {
         width: 90%;
         max-width: 600px;
@@ -47,9 +49,27 @@
     #search-results li {
         padding: 8px 10px;
         border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
     }
     #search-results li:last-child {
         border-bottom: none;
+    }
+    .color-box {
+        width: 1em;
+        height: 1em;
+        border-radius: 2px;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+    .color-K {
+        background-color: rgb(119,101,124);
+    }
+    .color-S {
+        background-color: rgb(248,186,150);
+    }
+    .color-KS {
+        background: linear-gradient(135deg, rgb(119,101,124) 50%, rgb(248,186,150) 50%);
     }
     #search-results a {
         color: #0066cc;
@@ -59,6 +79,7 @@
         text-decoration: underline;
     }
 
+    /* === Стили раскрывающихся списков === */
     .lists-container {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -100,45 +121,33 @@
     details[open] > summary::before {
         content: '▼';
     }
-    summary img {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-    }
-    .sub-details {
-        margin-top: 10px;
-        border: none;
-        background-color: transparent;
-    }
-    .sub-details summary {
-        background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
-        font-size: 1em;
-        padding: 8px;
-    }
-    .sub-details summary::before {
-        content: '►';
-        margin-right: 5px;
-    }
-    .sub-details[open] > summary::before {
-        content: '▼';
-    }
     ul {
         list-style-type: none;
         padding-left: 20px;
     }
-    li {
-        padding: 5px 0;
+    li { padding: 5px 0; font-size: 1em; }
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    audio { display: none; }
+
+    /* === ВОССТАНОВЛЕНИЕ исходного вида под-списков === */
+    details details {
+        border: none;
+        background: transparent;
+        margin-top: 5px;
+    }
+    details details summary {
+        background: linear-gradient(135deg, rgb(119,101,124), rgb(248,186,150));
         font-size: 1em;
+        padding: 8px;
+        
     }
-    a {
-        color: #0066cc;
-        text-decoration: none;
+    details details summary::before {
+        content: '►';
+        margin-right: 5px;
     }
-    a:hover {
-        text-decoration: underline;
-    }
-    audio {
-        display: none;
+    details details[open] > summary::before {
+        content: '▼';
     }
 </style>
 </head>
@@ -149,14 +158,15 @@
     <img alt="Заголовочное изображение" src="KOSHAKI_WIKI.png"/>
 </header>
 
-<!-- Поиск -->
+<!-- === Поиск === -->
 <div id="search-container">
     <input type="text" id="search-input" placeholder="Поиск по статьям...">
     <ul id="search-results"></ul>
 </div>
 
+<!-- === Раскрывающиеся списки === -->
 <div class="lists-container">
-    <!-- Персонажи -->
+<!-- Персонажи -->
 <details>
 <summary>Персонажи</summary>
 <details class="sub-details">
@@ -363,49 +373,28 @@
 
 <script>
 const articles = [
-    { title: "ДК. 56, Дженни Лэвиндэ Ренти Люцык", url: "https://lutsic.github.io/manya.solace/wiki/lutsic/" },
-    { title: "ДК. 65, Джезитта Маня", url: "https://lutsic.github.io/manya.solace/wiki/manya/" },
-    { title: "Истаевцы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/istaevsti/" },
-    { title: "Норо", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/noro/" },
-    { title: "Виверна", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/wyverna/" },
-    { title: "Наушка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/naushka/" },
-    { title: "ДК. 16, Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/vivaldi/" },
-    { title: "ДК. 26, Саша (Ушедший)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha-leaved/" },
-    { title: "ДК. 26, Саша", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha/" },
-    { title: "ДК. 56, Дженни Лэвиндэ(Ушедшая)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/jenny_levinde/" },
-    { title: "ДК. Ø, Ники", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/niki/" },
-    { title: "Мифический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
-    { title: "Мистический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
-    { title: "НАСА", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/nasa/" },
-    { title: "Орден Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/orden-vivaldi/" },
-    { title: "Кошаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/koshaki/" },
-    { title: "Сони", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/soni/" },
-    { title: "Хабаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khabaki/" },
-    { title: "Демоны", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demoni/" },
-    { title: "Лена", url: "https://lutsic.github.io/manya.solace/wiki/solace/lena/" },
-    { title: "Настя", url: "https://lutsic.github.io/manya.solace/wiki/solace/nastya/" },
-    { title: "Работники", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/rabotniki/" },
-    { title: "Хранители Времени", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khraniteli-vremeni/" },
-    { title: "Драконы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/drakoni/" },
-    { title: "45 Кошачьих веков", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/45-koshachikh-vekov/" },
-    { title: "Смутное время", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/smutnoe-vremya/" },
-    { title: "Нескончаемые войны", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/neskonchaemie-voyni/" },
-    { title: "Конец всего и Новый мир", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/konets-vsego/" },
-    { title: "Храм демонов", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/xpam-demonov/" },
-    { title: "Фивы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/fivi/" },
-    { title: "Красные горы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/krasnie-gori/" },
-    { title: "Книга Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/kniga-vivaldi/" },
-    { title: "Книга сил Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/kniga-sil-vivaldi/" },
-    { title: "Мифическая ручка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-ruchka/" },
-    { title: "Священная кололка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/svyashennaya-kololka/" },
-    { title: "Демонические карандаши", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demonicheskie-karandashi/" },
-    { title: "Демоническая сумка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demonicheskaya-sumka/" },
-    { title: "Странная карта", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/strannaya-karta/" },
-    { title: "Строение вселенной", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/stroenie-vselennoy/" },
-    { title: "Расположение миров", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/raspolozchenie-mirov/" },
-    { title: "Кошай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/koshay/" },
-    { title: "Истай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/istay/" },
-    { title: "Хабикарай", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khabikaray/" }
+   { type: "KS", title: "ДК. 56, Дженни Лэвиндэ Ренти Люцык", url: "https://lutsic.github.io/manya.solace/wiki/lutsic/" },
+   { type: "KS", title: "ДК. 65, Джезитта Маня", url: "https://lutsic.github.io/manya.solace/wiki/manya/" },
+   { type: "K", title: "Истаевцы", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/istaevsti/" },
+   { type: "K", title: "Норо", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/noro/" },
+   { type: "K", title: "Виверна", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/wyverna/" },
+   { type: "K", title: "Наушка", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/naushka/" },
+   { type: "K", title: "ДК. 16, Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/vivaldi/" },
+   { type: "K", title: "ДК. 26, Саша (Ушедший)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha-leaved/" },
+   { type: "K", title: "ДК. 26, Саша", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/sasha/" },
+   { type: "K", title: "ДК. 56, Дженни Лэвиндэ(Ушедшая)", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/jenny_levinde/" },
+   { type: "K", title: "ДК. Ø, Ники", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/niki/" },
+   { type: "K", title: "Мифический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
+   { type: "K", title: "Мистический орден", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/myth-and-myst-orden/" },
+   { type: "K", title: "НАСА", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/nasa/" },
+   { type: "K", title: "Орден Вивальди", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/orden-vivaldi/" },
+   { type: "K", title: "Кошаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/koshaki/" },
+   { type: "K", title: "Сони", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/soni/" },
+   { type: "K", title: "Хабаки", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/khabaki/" },
+   { type: "K", title: "Демоны", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/demoni/" },
+   { type: "S", title: "Лена", url: "https://lutsic.github.io/manya.solace/wiki/solace/lena/" },
+   { type: "S", title: "Настя", url: "https://lutsic.github.io/manya.solace/wiki/solace/nastya/" },
+   { type: "KS", title: "Конец всего и Новый мир", url: "https://lutsic.github.io/manya.solace/wiki/koshaki/konets-vsego/" }
 ];
 
 const searchInput = document.getElementById('search-input');
@@ -424,7 +413,14 @@ searchInput.addEventListener('input', () => {
     } else {
         results.forEach(article => {
             const li = document.createElement('li');
-            li.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box color-' + article.type;
+            const link = document.createElement('a');
+            link.href = article.url;
+            link.textContent = article.title;
+            link.target = "_blank";
+            li.appendChild(colorBox);
+            li.appendChild(link);
             resultsList.appendChild(li);
         });
     }
