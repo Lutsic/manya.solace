@@ -26,7 +26,6 @@
       overflow: hidden;
     }
 
-    /* затемнение фона для читаемости текста */
     body::before {
       content: "";
       position: absolute;
@@ -85,7 +84,20 @@
       gap: 4px;
     }
 
-    /* подпись в нижнем левом углу */
+    /* ссылки — всегда синие и без подчеркивания */
+    a {
+      color: #1e90ff;
+      text-decoration: none;
+    }
+
+    a:visited {
+      color: #1e90ff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
     .image-credit {
       position: fixed;
       bottom: 8px;
