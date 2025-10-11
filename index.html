@@ -5,147 +5,131 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Solace</title>
   <style>
-    :root{
-      --max-width:1200px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-
-    html,body{
-      height:100%;
-      background:#fff;
+    html, body {
+      height: 100%;
+      width: 100%;
       font-family: "Helvetica Neue", Arial, sans-serif;
+      background: url('FONE.png') center center / cover no-repeat fixed;
+      color: #fff;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .page {
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px 20px;
-      gap:20px;
+    /* затемнение фона для читаемости текста */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
+      z-index: 0;
     }
 
-    .hero {
-      width:100%;
-      max-width:var(--max-width);
-      aspect-ratio: 16 / 9;
-      background-image: url('FONE.png');
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      padding:40px;
-      border-radius:6px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      overflow:hidden;
-    }
-
-    .overlay{
-      position:absolute;
-      inset:0;
-      background: rgba(0,0,0,0.25);
-      pointer-events:none;
-    }
-
-    .content{
-      position:relative;
-      width:100%;
-      color:#fff;
-      font-weight:800;
-      text-align:center;
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 40px;
       text-shadow: 0 2px 0 rgba(0,0,0,0.35);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:18px;
     }
 
-    h1{
+    h1 {
       font-size: clamp(28px, 5vw, 54px);
-      line-height:1.02;
-      margin-bottom:0;
+      line-height: 1.02;
     }
 
-    .divider{
-      width:60%;
-      border-top:4px solid rgba(255,255,255,0.95);
-      margin: 8px 0 0 0;
+    .divider {
+      width: 60%;
+      border-top: 4px solid rgba(255, 255, 255, 0.95);
     }
 
-    .lead{
-      margin-top:8px;
+    .lead {
+      margin-top: 8px;
       font-size: clamp(16px, 2.2vw, 22px);
-      font-weight:800;
-      max-width:78%;
-      text-align:center;
+      max-width: 78%;
     }
 
-    .list{
-      margin-top:6px;
+    .list {
+      margin-top: 6px;
       font-size: clamp(16px, 2vw, 20px);
-      text-align:left;
-      max-width:760px;
+      text-align: left;
+      max-width: 760px;
       list-style: disc;
       padding-left: 1.05em;
     }
 
-    .planned{
-      margin-top:12px;
+    .planned {
+      margin-top: 12px;
       font-size: clamp(22px, 3.2vw, 30px);
-      font-weight:800;
+      font-weight: 800;
     }
 
-    .hero-footer{
-      margin-top:auto;
+    .hero-footer {
+      margin-top: 20px;
       font-size: clamp(12px, 1.2vw, 14px);
-      font-weight:800;
-      text-align:center;
-      opacity:0.95;
-      display:flex;
-      flex-direction:column;
-      gap:2px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    @media (max-width:520px){
-      .hero { padding:20px; }
+    /* подпись в нижнем левом углу */
+    .image-credit {
+      position: fixed;
+      bottom: 8px;
+      left: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @media (max-width:520px) {
       .list { padding-left: 1.1em; }
+      .content { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <main class="hero" role="main" aria-label="Заглушка manya.solace">
-      <div class="overlay" aria-hidden="true"></div>
+  <div class="content">
+    <h1>Добро пожаловать на сайт Solace!</h1>
+    <div class="divider"></div>
 
-      <div class="content">
-        <h1>Добро пожаловать на manya.solace!</h1>
-        <div class="divider" aria-hidden="true"></div>
+    <p class="lead">
+      На данный момент проект находится в разработке, но уже готово:
+    </p>
 
-        <p class="lead">
-          На данный момент проект находится в разработке, но уже готово:
-        </p>
+    <ul class="list">
+      <li>Вики вселенной Кошаков и Solace.</li>
+      <li>Koshaki: Shards of the Past — самый полный пересказ сюжета Кошаков, доступен с вики и отдельно.</li>
+    </ul>
 
-        <ul class="list" aria-label="Готово">
-          <li>Вики по выдуманной вселенной Кошаков и Solace.</li>
-          <li>Koshaki: Shards of the Past — самый полный пересказ сюжета Кошаков, доступен с вики и отдельно.</li>
-        </ul>
+    <div class="planned">А также планируется:</div>
 
-        <div class="planned">А также планируется:</div>
+    <ul class="list">
+      <li>Фильм со смесью рисовки и реальной съемки по сюжету Solace.</li>
+    </ul>
 
-        <ul class="list" aria-label="Планируется">
-          <li>Фильм со смесью рисовки и реальной съемки по сюжету Solace.</li>
-        </ul>
-
-        <div class="hero-footer">
-          <div>© 2025 Lutsic. Все права защищены.</div>
-          <div>Контакты и Соцсети</div>
-        </div>
-      </div>
-    </main>
+    <div class="hero-footer">
+      <div>© 2025 Lutsic. Все права защищены.</div>
+      <div>Контакты и Соцсети</div>
+    </div>
   </div>
+
+  <div class="image-credit">Image © Tuxedo Labs</div>
 </body>
 </html>
