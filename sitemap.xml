@@ -28,11 +28,6 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://lutsic.github.io/manya.solace/building/</loc>
-  <lastmod>2025-10-11T15:48:40+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
   <loc>https://lutsic.github.io/manya.solace/wiki/about/</loc>
   <lastmod>2025-10-11T15:48:40+00:00</lastmod>
   <priority>0.64</priority>
@@ -237,6 +232,7 @@
   <lastmod>2025-10-11T15:48:40+00:00</lastmod>
   <priority>0.51</priority>
 </url>
+
 
 
 </urlset>
