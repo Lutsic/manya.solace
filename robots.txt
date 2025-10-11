@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lutsic.github.io/manya.solace/sitemap.xml
